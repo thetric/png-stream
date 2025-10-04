@@ -1,12 +1,11 @@
-var PNGDecoder = require('../decoder');
-var PNGEncoder = require('../encoder');
-var assert = require('assert');
-var fs = require('fs');
-var concat = require('concat-frames');
-var PassThrough = require('stream').PassThrough;
+import {PNGDecoder} from "../decoder.mjs";
+import {PNGEncoder} from "../encoder.mjs";
+import assert from "assert";
+import concat from "concat-frames";
+import { describe, it } from 'node:test';
 
 describe('PNGEncoder', function() {
-  it('encodes an RGB image', function(done) {
+  it('encodes an RGB image', function(t, done) {
     var pixels = new Buffer(10 * 10 * 3);
     for (var i = 0; i < pixels.length; i += 3) {
       pixels[i] = 204;
@@ -29,7 +28,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('encodes an RGBA image', function(done) {
+  it('encodes an RGBA image', function(t, done) {
     var pixels = new Buffer(10 * 10 * 4);
     for (var i = 0; i < pixels.length; i += 4) {
       pixels[i] = 0;
@@ -53,7 +52,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('encodes a grayscale image', function(done) {
+  it('encodes a grayscale image', function(t, done) {
     var pixels = new Buffer(10 * 10);
     pixels.fill(128);
     
@@ -72,7 +71,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('encodes a grayscale image with alpha', function(done) {
+  it('encodes a grayscale image with alpha', function(t, done) {
     var pixels = new Buffer(10 * 10 * 2);
     for (var i = 0; i < pixels.length; i += 4) {
       pixels[i] = 128;
@@ -94,7 +93,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('encodes an indexed image', function(done) {
+  it('encodes an indexed image', function(t, done) {
     var palette = new Buffer([ 204, 0, 153 ]);
     var pixels = new Buffer(10 * 10);
     pixels.fill(0);
@@ -115,7 +114,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('encodes an indexed image with alpha', function(done) {
+  it('encodes an indexed image with alpha', function(t, done) {
     var palette = new Buffer([ 204, 0, 153, 128 ]);
     var pixels = new Buffer(10 * 10);
     pixels.fill(0);
@@ -136,7 +135,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('errors with invalid palette size', function(done) {
+  it('errors with invalid palette size', function(t, done) {
     var palette = new Buffer([ 204, 0, 153, 1, 3 ]);
     var pixels = new Buffer(10 * 10);
     pixels.fill(0);
@@ -152,7 +151,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('errors with missing palette', function(done) {
+  it('errors with missing palette', function(t, done) {
     var enc = new PNGEncoder(10, 10, { colorSpace: 'indexed' });
     
     enc.on('error', function(err) {
@@ -166,7 +165,7 @@ describe('PNGEncoder', function() {
     enc.end(pixels);
   });
   
-  it('encodes an animated image', function(done) {
+  it('encodes an animated image', function(t, done) {
     var frame1 = new Buffer(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;
@@ -204,7 +203,7 @@ describe('PNGEncoder', function() {
     enc.end(frame2);
   });
   
-  it('supports infinite repeat count', function(done) {
+  it('supports infinite repeat count', function(t, done) {
     var frame1 = new Buffer(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;
@@ -243,7 +242,7 @@ describe('PNGEncoder', function() {
     enc.end(frame2);
   });
   
-  it('uses frame object for delays', function(done) {
+  it('uses frame object for delays', function(t, done) {
     var frame1 = new Buffer(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;
@@ -283,7 +282,7 @@ describe('PNGEncoder', function() {
     enc.end(frame2);
   });
   
-  it('encodes an indexed animated image', function(done) {
+  it('encodes an indexed animated image', function(t, done) {
     var palette = new Buffer([ 204, 0, 151, 22, 204, 13 ]);
     var frame1 = new Buffer(10 * 10);
     var frame2 = new Buffer(10 * 10);
@@ -313,7 +312,7 @@ describe('PNGEncoder', function() {
     enc.end(frame2);
   });
   
-  it('writes only the first frame unless animated option is set', function(done) {
+  it('writes only the first frame unless animated option is set', function(t, done) {
     var frame1 = new Buffer(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;

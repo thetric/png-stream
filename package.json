@@ -2,7 +2,8 @@
   "name": "png-stream",
   "version": "1.0.5",
   "description": "A streaming PNG encoder and decoder",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.mjs",
   "directories": {
     "test": "test"
   },
@@ -13,11 +14,10 @@
     "pixel-stream": "^1.0.3"
   },
   "devDependencies": {
-    "concat-frames": "^1.0.3",
-    "mocha": "^11.7.4"
+    "concat-frames": "^1.0.3"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "node --test"
   },
   "repository": {
     "type": "git",

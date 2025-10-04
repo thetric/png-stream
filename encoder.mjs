@@ -1,8 +1,8 @@
-var util = require('util');
-var PixelStream = require('pixel-stream');
-var zlib = require('zlib');
-var BufferList = require('bl');
-var crc32 = require('buffer-crc32');
+import util from "util";
+import PixelStream from "pixel-stream";
+import zlib from "zlib";
+import BufferList from "bl";
+import crc32 from "buffer-crc32";
 
 // color types
 var PNG_COLOR_TYPE_GRAY = 0;
@@ -29,7 +29,7 @@ var PNG_COLOR_SPACES = {
   'indexed': [ PNG_COLOR_TYPE_INDEXED, 1 ]
 };
 
-function PNGEncoder(width, height, opts) {
+export function PNGEncoder(width, height, opts) {
   PixelStream.apply(this, arguments);
   
   this._buffer = new BufferList();
@@ -325,5 +325,3 @@ function sumBuf(buf) {
   
   return sum;
 }
-
-module.exports = PNGEncoder;

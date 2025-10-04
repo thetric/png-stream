@@ -1,17 +1,18 @@
-var PNGDecoder = require('../decoder');
-var assert = require('assert');
-var fs = require('fs');
-var concat = require('concat-frames');
+import {PNGDecoder} from "../decoder.mjs";
+import assert from "assert";
+import fs from "fs";
+import concat from "concat-frames";
+import { describe, it } from 'node:test';
 
 describe('PNGDecoder', function() {
   it('can probe to see if a file is a png', function() {
-    var file = fs.readFileSync(__dirname + '/images/trees.png');
+    var file = fs.readFileSync(new URL('./images/trees.png', import.meta.url));
     assert(PNGDecoder.probe(file));
     assert(!PNGDecoder.probe(new Buffer(100)));
   });
 
-  it('decodes an RGB image', function(done) {
-    fs.createReadStream(__dirname + '/images/trees.png')
+  it('decodes an RGB image', function(t, done) {
+    fs.createReadStream(new URL('./images/trees.png', import.meta.url))
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 1);
@@ -24,8 +25,8 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an RGBA image', function(done) {
-    fs.createReadStream(__dirname + '/images/djay.png')
+  it('decodes an RGBA image', function(t, done) {
+    fs.createReadStream(new URL('./images/djay.png', import.meta.url))
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 1);
@@ -38,8 +39,8 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an indexed RGBA image', function(done) {
-    fs.createReadStream(__dirname + '/images/djay-indexed.png')
+  it('decodes an indexed RGBA image', function(t, done) {
+    fs.createReadStream(new URL('./images/djay-indexed.png', import.meta.url))
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 1);
@@ -52,8 +53,8 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an indexed RGBA image and returns raw data given `indexed` option', function(done) {
-    fs.createReadStream(__dirname + '/images/djay-indexed.png')
+  it('decodes an indexed RGBA image and returns raw data given `indexed` option', function(t, done) {
+    fs.createReadStream(new URL('./images/djay-indexed.png', import.meta.url))
       .pipe(new PNGDecoder({ indexed: true }))
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 1);
@@ -67,8 +68,8 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes a grayscale image', function(done) {
-    fs.createReadStream(__dirname + '/images/gray.png')
+  it('decodes a grayscale image', function(t, done) {
+    fs.createReadStream(new URL('./images/gray.png', import.meta.url))
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 1);
@@ -81,8 +82,8 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes a grayscale image with alpha', function(done) {
-    fs.createReadStream(__dirname + '/images/graya.png')
+  it('decodes a grayscale image with alpha', function(t, done) {
+    fs.createReadStream(new URL('./images/graya.png', import.meta.url))
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 1);
@@ -95,8 +96,8 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an animated image', function(done) {
-    fs.createReadStream(__dirname + '/images/chompy.png')
+  it('decodes an animated image', function(t, done) {
+    fs.createReadStream(new URL('./images/chompy.png', import.meta.url))
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 21);
@@ -112,9 +113,9 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('errors on invalid filter algorithm', function(done) {
+  it('errors on invalid filter algorithm', function(t, done) {
     var called = false;
-    fs.createReadStream(__dirname + '/images/broken.png')
+    fs.createReadStream(new URL('./images/broken.png', import.meta.url))
       .pipe(new PNGDecoder)
       .on('error', function(err) {
         assert(err instanceof Error);
@@ -124,8 +125,8 @@ describe('PNGDecoder', function() {
       });
   });
 
-  it('handles paeth filter on the first scanline', function(done) {
-    fs.createReadStream(__dirname + '/images/image001.png')
+  it('handles paeth filter on the first scanline', function(t, done) {
+    fs.createReadStream(new URL('./images/image001.png', import.meta.url))
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
         assert.equal(frames.length, 1);

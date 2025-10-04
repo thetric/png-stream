@@ -1,8 +1,8 @@
-var util = require('util');
-var Transform = require('stream').Transform;
-var BufferList = require('bl');
-var bufferEqual = require('buffer-equal');
-var zlib = require('zlib');
+import util from "util";
+import {Transform} from "stream";
+import BufferList from "bl";
+import bufferEqual from "buffer-equal";
+import zlib from "zlib";
 
 // color types
 var PNG_COLOR_TYPE_GRAY = 0;
@@ -26,7 +26,7 @@ var PNG_CRC = 3;
 
 var SIGNATURE = new Buffer([ 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a ]);
 
-function PNGDecoder(options) {
+export function PNGDecoder(options) {
   Transform.call(this);
 
   this._outputIndexed = (options && options.indexed) || false;
@@ -498,5 +498,3 @@ PNGDecoder.prototype._flush = function(done) {
   this._zlib.end();
   this._zlib.once('end', done);
 };
-
-module.exports = PNGDecoder;
