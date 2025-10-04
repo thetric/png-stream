@@ -14,7 +14,6 @@
   },
   "devDependencies": {
     "concat-frames": "^1.0.3",
-    "concat-stream": "^2.0.0",
     "mocha": "^11.7.4"
   },
   "scripts": {
