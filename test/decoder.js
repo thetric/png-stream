@@ -1,4 +1,5 @@
 var PNGDecoder = require('../decoder');
+const { describe, it } = require('node:test');
 var assert = require('assert');
 var fs = require('fs');
 var concat = require('concat-frames');
@@ -10,7 +11,7 @@ describe('PNGDecoder', function() {
     assert(!PNGDecoder.probe(new Buffer(100)));
   });
 
-  it('decodes an RGB image', function(done) {
+  it('decodes an RGB image', function(t, done) {
     fs.createReadStream(__dirname + '/images/trees.png')
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
@@ -24,7 +25,7 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an RGBA image', function(done) {
+  it('decodes an RGBA image', function(t, done) {
     fs.createReadStream(__dirname + '/images/djay.png')
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
@@ -38,7 +39,7 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an indexed RGBA image', function(done) {
+  it('decodes an indexed RGBA image', function(t, done) {
     fs.createReadStream(__dirname + '/images/djay-indexed.png')
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
@@ -52,7 +53,7 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an indexed RGBA image and returns raw data given `indexed` option', function(done) {
+  it('decodes an indexed RGBA image and returns raw data given `indexed` option', function(t, done) {
     fs.createReadStream(__dirname + '/images/djay-indexed.png')
       .pipe(new PNGDecoder({ indexed: true }))
       .pipe(concat(function(frames) {
@@ -67,7 +68,7 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes a grayscale image', function(done) {
+  it('decodes a grayscale image', function(t, done) {
     fs.createReadStream(__dirname + '/images/gray.png')
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
@@ -81,7 +82,7 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes a grayscale image with alpha', function(done) {
+  it('decodes a grayscale image with alpha', function(t, done) {
     fs.createReadStream(__dirname + '/images/graya.png')
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
@@ -95,7 +96,7 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('decodes an animated image', function(done) {
+  it('decodes an animated image', function(t, done) {
     fs.createReadStream(__dirname + '/images/chompy.png')
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
@@ -112,7 +113,7 @@ describe('PNGDecoder', function() {
       }));
   });
 
-  it('errors on invalid filter algorithm', function(done) {
+  it('errors on invalid filter algorithm', function(t, done) {
     var called = false;
     fs.createReadStream(__dirname + '/images/broken.png')
       .pipe(new PNGDecoder)
@@ -124,7 +125,7 @@ describe('PNGDecoder', function() {
       });
   });
 
-  it('handles paeth filter on the first scanline', function(done) {
+  it('handles paeth filter on the first scanline', function(t, done) {
     fs.createReadStream(__dirname + '/images/image001.png')
       .pipe(new PNGDecoder)
       .pipe(concat(function(frames) {
