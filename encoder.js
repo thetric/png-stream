@@ -18,7 +18,7 @@ var PNG_FILTER_UP = 2;
 var PNG_FILTER_AVG = 3;
 var PNG_FILTER_PAETH = 4;
 
-var PNG_SIGNATURE = new Buffer([ 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a ]);
+var PNG_SIGNATURE = Buffer.from([ 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a ]);
 
 // color type and component count for each supported color space
 var PNG_COLOR_SPACES = {
@@ -141,13 +141,13 @@ PNGEncoder.prototype._end = function(done) {
     this._output.length = 0; // free memory
   }
   
-  this._writeChunk('IEND', new Buffer(0));    
+  this._writeChunk('IEND', Buffer.alloc(0));    
   done();
 }
 
 // Write's a generic PNG chunk including header, data, and CRC
 PNGEncoder.prototype._writeChunk = function(chunk, data) {
-  var header = new Buffer(8);
+  var header = Buffer.alloc(8);
   header.writeUInt32BE(data.length, 0);
   header.write(chunk, 4, 4, 'ascii');
   
@@ -159,7 +159,7 @@ PNGEncoder.prototype._writeChunk = function(chunk, data) {
 };
 
 PNGEncoder.prototype._writeIHDR = function() {
-  var chunk = new Buffer(13);
+  var chunk = Buffer.alloc(13);
   chunk.writeUInt32BE(this.format.width, 0);
   chunk.writeUInt32BE(this.format.height, 4);
   chunk[8] = 8; // bits
@@ -177,8 +177,8 @@ PNGEncoder.prototype._writePLTE = function() {
   // check if the palette contains transparency
   // if so, we need to separate it out into the tRNS chunk
   if (palette.length % 4 === 0) {
-    var plte = new Buffer(palette.length / 4 * 3);
-    var trns = new Buffer(palette.length / 4);
+    var plte = Buffer.alloc(palette.length / 4 * 3);
+    var trns = Buffer.alloc(palette.length / 4);
     var p = 0, t = 0;
     
     for (var i = 0; i < palette.length;) {
@@ -204,7 +204,7 @@ PNGEncoder.prototype._writePLTE = function() {
 
 // For animated PNGs, the acTL chunk is the animation header
 PNGEncoder.prototype._writeacTL = function() {
-  var buf = new Buffer(8);
+  var buf = Buffer.alloc(8);
     
   buf.writeUInt32BE(this._numFrames, 0);
   buf.writeUInt32BE(this.format.repeatCount === Infinity ? 0 : (this.format.repeatCount || 1), 4);
@@ -214,7 +214,7 @@ PNGEncoder.prototype._writeacTL = function() {
 
 // For animated PNGs, the fcTL chunk stores the header for a frame
 PNGEncoder.prototype._writefcTL = function(frame) {
-  var buf = new Buffer(26);
+  var buf = Buffer.alloc(26);
   
   buf.writeUInt32BE(this._sequence++, 0);
   buf.writeUInt32BE(frame.width || this.format.width, 4);
@@ -236,7 +236,7 @@ PNGEncoder.prototype._writeIDAT = function(data) {
 
 // Subsequent frame data for animated PNGs
 PNGEncoder.prototype._writefdAT = function(data) {
-  var buf = new Buffer(4 + data.length);
+  var buf = Buffer.alloc(4 + data.length);
   
   buf.writeUInt32BE(this._sequence++, 0);
   data.copy(buf, 4);
@@ -247,8 +247,8 @@ PNGEncoder.prototype._writefdAT = function(data) {
 // Chooses the best filter for a given scanline.
 // Tries them all and chooses the one with the lowest sum.
 PNGEncoder.prototype._filter = function(scanline) {
-  var out = new Buffer(1 + scanline.length);
-  var tmp = new Buffer(1 + scanline.length);
+  var out = Buffer.alloc(1 + scanline.length);
+  var tmp = Buffer.alloc(1 + scanline.length);
   var prev = this._prevScanline;
   var b = this._pixelBytes;
   var min = Infinity;

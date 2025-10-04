@@ -7,7 +7,7 @@ describe('PNGDecoder', function() {
   it('can probe to see if a file is a png', function() {
     var file = fs.readFileSync(__dirname + '/images/trees.png');
     assert(PNGDecoder.probe(file));
-    assert(!PNGDecoder.probe(new Buffer(100)));
+    assert(!PNGDecoder.probe(Buffer.alloc(100)));
   });
 
   it('decodes an RGB image', function(done) {

@@ -24,7 +24,7 @@ var PNG_HEADER = 1;
 var PNG_CHUNK = 2;
 var PNG_CRC = 3;
 
-var SIGNATURE = new Buffer([ 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a ]);
+var SIGNATURE = Buffer.from([ 0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a ]);
 
 function PNGDecoder(options) {
   Transform.call(this);
@@ -228,7 +228,7 @@ PNGDecoder.prototype._initFrame = function() {
 
   this.scanlineLength = this.pixelBytes * this.format.width;
   this._previousScanline = null;
-  this._scanline = new Buffer(this.scanlineLength);
+  this._scanline = Buffer.alloc(this.scanlineLength);
 };
 
 // Reads the image palette chunk
@@ -461,7 +461,7 @@ PNGDecoder.prototype._decodePixels = function(data) {
         this.push(scanline);
 
       this._previousScanline = prev = scanline;
-      this._scanline = scanline = new Buffer(this.scanlineLength);
+      this._scanline = scanline = Buffer.alloc(this.scanlineLength);
       this._pixelOffset = off = 0;
       this._pixelType = -1;
     }
@@ -477,7 +477,7 @@ PNGDecoder.prototype._convertIndexedScanline = function(scanline) {
     return this.emit('error', new Error('Missing palette'));
 
   var alpha = this._transparencyIndex;
-  var buf = new Buffer(scanline.length * (alpha ? 4 : 3));
+  var buf = Buffer.alloc(scanline.length * (alpha ? 4 : 3));
   var p = 0;
 
   for (var i = 0; i < scanline.length; i++) {

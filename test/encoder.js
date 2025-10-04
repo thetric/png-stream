@@ -7,7 +7,7 @@ var PassThrough = require('stream').PassThrough;
 
 describe('PNGEncoder', function() {
   it('encodes an RGB image', function(done) {
-    var pixels = new Buffer(10 * 10 * 3);
+    var pixels = Buffer.alloc(10 * 10 * 3);
     for (var i = 0; i < pixels.length; i += 3) {
       pixels[i] = 204;
       pixels[i + 1] = 0;
@@ -22,7 +22,7 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].width, 10);
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgb');
-         assert.deepEqual(frames[0].pixels.slice(0, 3), new Buffer([ 204, 0, 151 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 3), Buffer.from([ 204, 0, 151 ]));
          done();
        }));
     
@@ -30,7 +30,7 @@ describe('PNGEncoder', function() {
   });
   
   it('encodes an RGBA image', function(done) {
-    var pixels = new Buffer(10 * 10 * 4);
+    var pixels = Buffer.alloc(10 * 10 * 4);
     for (var i = 0; i < pixels.length; i += 4) {
       pixels[i] = 0;
       pixels[i + 1] = 56;
@@ -46,7 +46,7 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].width, 10);
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgba');
-         assert.deepEqual(frames[0].pixels.slice(0, 4), new Buffer([ 0, 56, 128, 32 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 4), Buffer.from([ 0, 56, 128, 32 ]));
          done();
        }));
     
@@ -54,7 +54,7 @@ describe('PNGEncoder', function() {
   });
   
   it('encodes a grayscale image', function(done) {
-    var pixels = new Buffer(10 * 10);
+    var pixels = Buffer.alloc(10 * 10);
     pixels.fill(128);
     
     var enc = new PNGEncoder(10, 10, { colorSpace: 'gray' });
@@ -73,7 +73,7 @@ describe('PNGEncoder', function() {
   });
   
   it('encodes a grayscale image with alpha', function(done) {
-    var pixels = new Buffer(10 * 10 * 2);
+    var pixels = Buffer.alloc(10 * 10 * 2);
     for (var i = 0; i < pixels.length; i += 4) {
       pixels[i] = 128;
       pixels[i + 1] = 32;
@@ -87,7 +87,7 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].width, 10);
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'graya');
-         assert.deepEqual(frames[0].pixels.slice(0, 2), new Buffer([ 128, 32 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 2), Buffer.from([ 128, 32 ]));
          done();
        }));
     
@@ -95,8 +95,8 @@ describe('PNGEncoder', function() {
   });
   
   it('encodes an indexed image', function(done) {
-    var palette = new Buffer([ 204, 0, 153 ]);
-    var pixels = new Buffer(10 * 10);
+    var palette = Buffer.from([ 204, 0, 153 ]);
+    var pixels = Buffer.alloc(10 * 10);
     pixels.fill(0);
     
     var enc = new PNGEncoder(10, 10, { colorSpace: 'indexed', palette: palette });
@@ -108,7 +108,7 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgb');
          assert.equal(frames[0].pixels.length, 10 * 10 * 3);
-         assert.deepEqual(frames[0].pixels.slice(0, 3), new Buffer([ 204, 0, 153 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 3), Buffer.from([ 204, 0, 153 ]));
          done();
        }));
     
@@ -116,8 +116,8 @@ describe('PNGEncoder', function() {
   });
   
   it('encodes an indexed image with alpha', function(done) {
-    var palette = new Buffer([ 204, 0, 153, 128 ]);
-    var pixels = new Buffer(10 * 10);
+    var palette = Buffer.from([ 204, 0, 153, 128 ]);
+    var pixels = Buffer.alloc(10 * 10);
     pixels.fill(0);
     
     var enc = new PNGEncoder(10, 10, { colorSpace: 'indexed', palette: palette });
@@ -129,7 +129,7 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgba');
          assert.equal(frames[0].pixels.length, 10 * 10 * 4);
-         assert.deepEqual(frames[0].pixels.slice(0, 4), new Buffer([ 204, 0, 153, 128 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 4), Buffer.from([ 204, 0, 153, 128 ]));
          done();
        }));
     
@@ -137,8 +137,8 @@ describe('PNGEncoder', function() {
   });
   
   it('errors with invalid palette size', function(done) {
-    var palette = new Buffer([ 204, 0, 153, 1, 3 ]);
-    var pixels = new Buffer(10 * 10);
+    var palette = Buffer.from([ 204, 0, 153, 1, 3 ]);
+    var pixels = Buffer.alloc(10 * 10);
     pixels.fill(0);
     
     var enc = new PNGEncoder(10, 10, { colorSpace: 'indexed', palette: palette });
@@ -161,20 +161,20 @@ describe('PNGEncoder', function() {
       done();
     });
     
-    var pixels = new Buffer(10 * 10);
+    var pixels = Buffer.alloc(10 * 10);
     pixels.fill(0);
     enc.end(pixels);
   });
   
   it('encodes an animated image', function(done) {
-    var frame1 = new Buffer(10 * 10 * 3);
+    var frame1 = Buffer.alloc(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;
       frame1[i + 1] = 0;
       frame1[i + 2] = 151;
     }
     
-    var frame2 = new Buffer(10 * 10 * 3)
+    var frame2 = Buffer.alloc(10 * 10 * 3)
     for (var i = 0; i < frame2.length; i += 3) {
       frame2[i] = 22;
       frame2[i + 1] = 204;
@@ -190,12 +190,12 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgb');
          assert.equal(frames[0].delay, 50);
-         assert.deepEqual(frames[0].pixels.slice(0, 3), new Buffer([ 204, 0, 151 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 3), Buffer.from([ 204, 0, 151 ]));
          assert.equal(frames[1].width, 10);
          assert.equal(frames[1].height, 10);
          assert.equal(frames[1].colorSpace, 'rgb');
          assert.equal(frames[1].delay, 50);
-         assert.deepEqual(frames[1].pixels.slice(0, 3), new Buffer([ 22, 204, 13 ]));
+         assert.deepEqual(frames[1].pixels.slice(0, 3), Buffer.from([ 22, 204, 13 ]));
          
          done();
        }));
@@ -205,14 +205,14 @@ describe('PNGEncoder', function() {
   });
   
   it('supports infinite repeat count', function(done) {
-    var frame1 = new Buffer(10 * 10 * 3);
+    var frame1 = Buffer.alloc(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;
       frame1[i + 1] = 0;
       frame1[i + 2] = 151;
     }
     
-    var frame2 = new Buffer(10 * 10 * 3)
+    var frame2 = Buffer.alloc(10 * 10 * 3)
     for (var i = 0; i < frame2.length; i += 3) {
       frame2[i] = 22;
       frame2[i + 1] = 204;
@@ -229,12 +229,12 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgb');
          assert.equal(frames[0].delay, 50);
-         assert.deepEqual(frames[0].pixels.slice(0, 3), new Buffer([ 204, 0, 151 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 3), Buffer.from([ 204, 0, 151 ]));
          assert.equal(frames[1].width, 10);
          assert.equal(frames[1].height, 10);
          assert.equal(frames[1].colorSpace, 'rgb');
          assert.equal(frames[1].delay, 50);
-         assert.deepEqual(frames[1].pixels.slice(0, 3), new Buffer([ 22, 204, 13 ]));
+         assert.deepEqual(frames[1].pixels.slice(0, 3), Buffer.from([ 22, 204, 13 ]));
          assert.equal(dec.format.repeatCount, Infinity);
          done();
        }));
@@ -244,14 +244,14 @@ describe('PNGEncoder', function() {
   });
   
   it('uses frame object for delays', function(done) {
-    var frame1 = new Buffer(10 * 10 * 3);
+    var frame1 = Buffer.alloc(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;
       frame1[i + 1] = 0;
       frame1[i + 2] = 151;
     }
     
-    var frame2 = new Buffer(10 * 10 * 3)
+    var frame2 = Buffer.alloc(10 * 10 * 3)
     for (var i = 0; i < frame2.length; i += 3) {
       frame2[i] = 22;
       frame2[i + 1] = 204;
@@ -267,12 +267,12 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgb');
          assert.equal(frames[0].delay, 100);
-         assert.deepEqual(frames[0].pixels.slice(0, 3), new Buffer([ 204, 0, 151 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 3), Buffer.from([ 204, 0, 151 ]));
          assert.equal(frames[1].width, 10);
          assert.equal(frames[1].height, 10);
          assert.equal(frames[1].colorSpace, 'rgb');
          assert.equal(frames[1].delay, 50);
-         assert.deepEqual(frames[1].pixels.slice(0, 3), new Buffer([ 22, 204, 13 ]));
+         assert.deepEqual(frames[1].pixels.slice(0, 3), Buffer.from([ 22, 204, 13 ]));
          
          done();
        }));
@@ -284,9 +284,9 @@ describe('PNGEncoder', function() {
   });
   
   it('encodes an indexed animated image', function(done) {
-    var palette = new Buffer([ 204, 0, 151, 22, 204, 13 ]);
-    var frame1 = new Buffer(10 * 10);
-    var frame2 = new Buffer(10 * 10);
+    var palette = Buffer.from([ 204, 0, 151, 22, 204, 13 ]);
+    var frame1 = Buffer.alloc(10 * 10);
+    var frame2 = Buffer.alloc(10 * 10);
     frame1.fill(0);
     frame2.fill(1);
     
@@ -299,12 +299,12 @@ describe('PNGEncoder', function() {
          assert.equal(frames[0].height, 10);
          assert.equal(frames[0].colorSpace, 'rgb');
          assert.equal(frames[0].delay, 50);
-         assert.deepEqual(frames[0].pixels.slice(0, 3), new Buffer([ 204, 0, 151 ]));
+         assert.deepEqual(frames[0].pixels.slice(0, 3), Buffer.from([ 204, 0, 151 ]));
          assert.equal(frames[1].width, 10);
          assert.equal(frames[1].height, 10);
          assert.equal(frames[1].colorSpace, 'rgb');
          assert.equal(frames[1].delay, 50);
-         assert.deepEqual(frames[1].pixels.slice(0, 3), new Buffer([ 22, 204, 13 ]));
+         assert.deepEqual(frames[1].pixels.slice(0, 3), Buffer.from([ 22, 204, 13 ]));
          
          done();
        }));
@@ -314,14 +314,14 @@ describe('PNGEncoder', function() {
   });
   
   it('writes only the first frame unless animated option is set', function(done) {
-    var frame1 = new Buffer(10 * 10 * 3);
+    var frame1 = Buffer.alloc(10 * 10 * 3);
     for (var i = 0; i < frame1.length; i += 3) {
       frame1[i] = 204;
       frame1[i + 1] = 0;
       frame1[i + 2] = 151;
     }
     
-    var frame2 = new Buffer(10 * 10 * 3)
+    var frame2 = Buffer.alloc(10 * 10 * 3)
     for (var i = 0; i < frame2.length; i += 3) {
       frame2[i] = 22;
       frame2[i + 1] = 204;
